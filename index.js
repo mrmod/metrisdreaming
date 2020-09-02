@@ -1,9 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import {Chip, FormControl, TextField, Button, IconButton, Link, List, ListItem, makeStyles, withStyles,
+import {
+    Button,
+    IconButton,
+    Link,
+    List,
+    ListItem,
+    ListItemText,
+    makeStyles,
     Typography,
-    ListItemText
+    withStyles,
 } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/FindInPage'
 import VanIcon from '@material-ui/icons/AirportShuttle';
@@ -145,13 +152,21 @@ const Dealership = (props) => {
         }} >
         <ListItemText
             primary={<React.Fragment>
-                    <IconButton onClick={() => hasMetris()}>
-                        <SearchIcon />
-                    </IconButton>
-                    
-                    <Link target="_blank" href={props.url}>
-                        <Typography variant="subtitle2">{props.name}</Typography>
-                    </Link>
+
+                    <Typography variant="h6">
+                        Dealership&nbsp;
+                        <Link target="_blank" href={props.url}>
+                            {props.name}
+                        </Link>
+                    </Typography>
+
+                    <Button
+                        variant="outlined"
+                        startIcon={<SearchIcon />}
+                        aria-label="Check for Metris"
+                        onClick={() => hasMetris()}>
+                        Check for Metris
+                    </Button>
                     
                     {hasResult ? (<IconButton
                         classes={{root: classes.vanRoot}}
