@@ -72,10 +72,20 @@ const Dealership = (props) => {
     const [isSearching, setIsSearching] = React.useState(false)
     const [hasResult, setHasResult] = React.useState(null)
     const [lastSearched, setLastSearched] = React.useState(null)
+    const [error, setError] = React.useState(null)
+
     const classes = useStyles()
 
+    const createError = (error) => {
+        if (error.hasOwnProperty('message')) {
+            setError(`error: ${error.message}\n${error.stack ? error.stack : 'no stack'}`)
+        } else {
+            setError(`error: something went wrong`)
+        }
+    }
     const hasMetris = () => {
         setIsSearching(true)
+        setError(null)
         const headers = {'Content-Type': 'application/json'}
         
         if (props.config) {
@@ -87,6 +97,7 @@ const Dealership = (props) => {
             .then(response => response.json())
             .then(searchAlgoliaResponse)
             .then(setHasResult)
+            .catch(createError)
             .finally(() => {
                 setIsSearching(false)
                 setLastSearched(new Date())
@@ -106,6 +117,7 @@ const Dealership = (props) => {
                         setHasResult(result[0])
                     }
                 })
+                .catch(createError)
                 .finally(() => {
                     setIsSearching(false)
                     setLastSearched(new Date())
@@ -115,7 +127,7 @@ const Dealership = (props) => {
     
     return (<ListItem
         style={{
-            background: isSearching ? 'rgb(220, 220, 220)' : 'rgb(240, 240, 240)',
+            background: isSearching ? 'rgb(220, 220, 220)' : error ? 'rgba(230, 190, 190, 0.3)' : 'rgb(240, 240, 240)',
             borderBottom: '0.1px solid black',
         }} >
         <ListItemText
@@ -127,6 +139,9 @@ const Dealership = (props) => {
                             {props.name}
                         </Link>
                     </Typography>
+                    {error ? (<Typography variant="h6">
+                        {error}
+                    </Typography>) : null }
                     {props.config ? (<div style={{display: 'flex'}}>
                         <AlgoliaIcon />
 
@@ -144,6 +159,7 @@ const Dealership = (props) => {
                     
                     {hasResult ? (<IconButton
                         classes={{root: classes.vanRoot}}
+                        target="_blank"
                         href={props.url}>
                             <VanIcon /> Might have a Metris
                     </IconButton>) : null}
